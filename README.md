@@ -2,7 +2,9 @@
 
 > React components rendered and inlined server-side.
 
-Stream HTML in, get React-rendered HTML out and improve your app SEO and accessibility!
+Stream HTML in, get React-rendered HTML out and improve the SEO and accessibility of your Web pages!
+
+The module is still in its early days and looks forward to be improved.
 
 # Install
 
@@ -10,7 +12,10 @@ Stream HTML in, get React-rendered HTML out and improve your app SEO and accessi
 npm install --save react-inliner
 ```
 
-# `data-react-inliner`
+# How it works
+
+This Node.js module looks for some `data-react-inliner* attributes within HTML content.
+It then renders the associated React component and prepends the resulting content into the HTML tag.
 
 ```html
 <!DOCTYPE html>
@@ -18,21 +23,33 @@ npm install --save react-inliner
 <body>
   <h1>My Cool React Single Page App</h1>
 
-  <nav data-react-inliner="src/nav.js"></nav>
+  <nav data-react-inliner="src/nav.jsx"></nav>
   <main data-react-inliner="src/app.js"></main>
 </body>
 </html>
 ```
 
+It uses [Streams](http://nodejs.org/api/stream.html) under the hood so the HTML filesize should not matter much.
+
 # Usage
 
 ## From the command line
 
+Regular read input
+
 ```bash
 react-inliner inputFile.html -o outputFile.html
+```
 
+By piping HTML in.
+
+```bash
 cat inputFile.html | react-inliner -o outputFile.html
+```
 
+By piping HTML in and out.
+
+```bash
 cat inputFile.html | react-inliner | htmlhint
 ```
 
@@ -40,13 +57,26 @@ cat inputFile.html | react-inliner | htmlhint
 
 ```json
 {
-  // …
   "scripts": {
     "build-html": "react-inliner src/index.html -o dist/index.html"
   }
+}
 ```
 
 Then run `npm run build-html`.
+
+## As an API
+
+```js
+var inliner = require('react-inliner');
+
+fs.createReadStream('src/index.html')
+  .pipe(inliner())
+  .pipe(fs.createWriteStream('dist/index.html');
+```
+
+**Warning**: there is an ugly hack preventing `*.less` files to be processed by the `require()` function.
+So it might create a black hole in your app if you use the module API.
 
 # License
 
