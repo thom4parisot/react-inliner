@@ -53,6 +53,12 @@ By piping HTML in and out.
 cat inputFile.html | react-inliner | htmlhint
 ```
 
+Get some help.
+
+```bash
+react-inliner --help
+``
+
 ## In your `package.json`
 
 ```json

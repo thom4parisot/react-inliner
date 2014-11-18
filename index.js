@@ -26,8 +26,13 @@ module.exports = function reactInliner(){
     var attrMatch;
 
     while(attrMatch = re.exec(frag)){
-      reactMod = require(path.join(basePath, attrMatch[2]));
-      html = React.renderToString(React.createElement(reactMod, reactMod.__reactData || null));
+      try {
+        reactMod = require(path.join(basePath, attrMatch[2]));
+        html = React.renderToString(React.createElement(reactMod, reactMod.__reactData || null));
+      }
+      catch (err){
+        return done(err);
+      }
 
       frag = frag.replace(attrMatch[0], attrMatch[0] + html)
     }
