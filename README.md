@@ -57,7 +57,7 @@ Get some help.
 
 ```bash
 react-inliner --help
-``
+```
 
 ## In your `package.json`
 
