@@ -22,18 +22,16 @@ module.exports = function reactInliner(){
     var frag = chunk.toString('utf8');
     var html = '';
     var reactMod = null;
+    var re = /data-react-(inject|inliner)="([^"]+)"([^>]*)>/gm;
+    var attrMatch;
 
-    var attrMatch = frag.match('data-react-inject="([^"]+)"([^>]*)>');
-
-    if (attrMatch){
-      reactMod = require(path.join(basePath, attrMatch[1]));
+    while(attrMatch = re.exec(frag)){
+      reactMod = require(path.join(basePath, attrMatch[2]));
       html = React.renderToString(React.createElement(reactMod, reactMod.__reactData || null));
 
-      done(null, frag.replace(attrMatch[0], attrMatch[0] + html));
-    }
-    else {
-      done(null, frag);
+      frag = frag.replace(attrMatch[0], attrMatch[0] + html)
     }
 
+    done(null, frag);
   });
 };
