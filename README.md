@@ -1,4 +1,4 @@
-# react-inliner
+# react-inliner [![Build Status](https://travis-ci.org/oncletom/react-inliner.svg)](https://travis-ci.org/oncletom/react-inliner)
 
 > React components rendered and inlined server-side.
 
