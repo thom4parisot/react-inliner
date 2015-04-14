@@ -11,13 +11,18 @@ require.extensions['.less'] = function(){
   return '';
 };
 
+var merge = require('lodash.defaults');
 var path = require('path');
 var through = require('through2');
 var React = require('react');
 
 var basePath = process.cwd();
 
-module.exports = function reactInliner(){
+module.exports = function reactInliner(options){
+  var userOptions = merge(options || {}, { reactId: true });
+
+  var render = userOptions.reactId ? React.renderToString : React.renderToStaticMarkup;
+
   return through(function(chunk, enc, done){
     var frag = chunk.toString('utf8');
     var html = '';
@@ -28,13 +33,13 @@ module.exports = function reactInliner(){
     while(attrMatch = re.exec(frag)){
       try {
         reactMod = require(path.join(basePath, attrMatch[2]));
-        html = React.renderToString(React.createElement(reactMod, reactMod.__reactData || null));
+        html = render(React.createElement(reactMod, reactMod.__reactData || null));
       }
       catch (err){
         return done(err);
       }
 
-      frag = frag.replace(attrMatch[0], attrMatch[0] + html)
+      frag = frag.replace(attrMatch[0], attrMatch[0] + html);
     }
 
     done(null, frag);

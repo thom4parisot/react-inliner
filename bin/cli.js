@@ -15,7 +15,13 @@ var argv = require('yargs')
     alias: 'o',
     description: 'Destination filepath (default is stdout)'
   })
+  .options('reactid', {
+    description: 'Include or suppress the data-reactid attribute in the HTML markup.',
+    default: true,
+    type: 'boolean'
+  })
   .usage('$0 inputFile.html -o outputFile.html')
+  .example('$0 inputFile.html -o outputFile.html --no-reactid')
   .example('cat inputFile.html | $0 -o outputFile.html', 'Piping in, writing out.')
   .example('$0 inputFile.html | htmlhint', 'Reading it, piping out')
   .strict()
@@ -25,5 +31,5 @@ var inputStream = argv._.length ? fs.createReadStream(join(cwd, argv._[0])) : pr
 var outputStream = argv.output ? fs.createWriteStream(join(cwd, argv.output)) : process.stdout;
 
 inputStream
-  .pipe(inliner())
+  .pipe(inliner({ reactId: argv.reactid }))
   .pipe(outputStream);

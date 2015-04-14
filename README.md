@@ -53,6 +53,12 @@ By piping HTML in and out.
 cat inputFile.html | react-inliner | htmlhint
 ```
 
+Suppress data reconciliation through the `data-reactid` attribute:
+
+```bash
+react-inliner inputFile.html -o outputFile.html --no-reactid
+```
+
 Get some help.
 
 ```bash
@@ -77,7 +83,7 @@ Then run `npm run build-html`.
 var inliner = require('react-inliner');
 
 fs.createReadStream('src/index.html')
-  .pipe(inliner())
+  .pipe(inliner({ reactId: false }))
   .pipe(fs.createWriteStream('dist/index.html');
 ```
 
